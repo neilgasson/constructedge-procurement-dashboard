@@ -1,0 +1,32 @@
+Acceptance_Test,Before_Cleaning,After_Cleaning,Result,Evidence
+Original workbook remains unchanged,9026be03c394bf83fd1749be6d729a32ce722a4eb93a5510469d6b80d9cd5f3a,9026be03c394bf83fd1749be6d729a32ce722a4eb93a5510469d6b80d9cd5f3a,PASS,SHA-256 matches the pre-audit source hash.
+Official cleaned workbook remains unchanged,1ce74d0b6030c1a1edf31b6f355de5afd34c50f6b575f92b1fe440a4afd921a9,1ce74d0b6030c1a1edf31b6f355de5afd34c50f6b575f92b1fe440a4afd921a9,PASS,SHA-256 matches the supplied official cleaned workbook.
+Row count,400,400,PASS,All 400 transactions are retained.
+Unique transactions,400,400,PASS,No exact duplicate transaction rows.
+Unique PO numbers,398,400,PASS,Two instructor-approved identifier corrections restore PO uniqueness.
+Project totals,10,10,PASS,Project count is unchanged.
+Supplier totals,24,24,PASS,Supplier count is unchanged.
+Material category totals,6,6,PASS,Material category count is unchanged.
+Procurement method totals,5,5,PASS,Procurement method count is unchanged.
+Total budget,431518839.83,431518839.83,PASS,Cleaning did not change Budget_Value_CAD.
+Total PO value,432466429.12,418104662.98,PASS,After-value reflects the two approved PO Value reconstructions.
+Total cost variance,-13414176.85,-13414176.85,PASS,Cost_Variance_CAD remained authoritative and unchanged.
+Portfolio financial reconciliation,14361766.14,0.0,PASS,SUM(PO Value) - SUM(Budget Value) equals SUM(Cost Variance).
+Quantity × Unit Rate = PO Value,Source contains missing/outlier exceptions,400/400,PASS,Verified independently for every cleaned row.
+Quantity × Budgeted Rate = Budget Value,400 rows tested,400/400,PASS,Verified independently for every cleaned row.
+PO Value - Budget Value = Cost Variance,398/400 source rows,400/400,PASS,Approved reconstructions resolve both source exceptions.
+Variance percentage,400 rows tested,400/400,PASS,"Variance_% equals Cost Variance ÷ Budget Value, rounded to one decimal point."
+Missing Unit_Rate_CAD,2,0,PASS,Two missing rates were derived from PO Value ÷ Quantity.
+Missing Lead_Time_Days,2,0,PASS,Two missing Civil Works lead times were imputed with 45 days.
+Civil Works median lead time,45.0,45 used for both missing values,PASS,Median calculated from observed Civil Works lead times before imputation.
+Valid dates,Four source text formats,400/400 valid dates,PASS,All dates parse to valid 2025 calendar dates.
+PO_Date and Month consistency,2 source mismatches,400/400,PASS,Month equals the month derived from PO_Date for every row.
+Category spelling and capitalization,All categorical columns checked,No case or whitespace collisions,PASS,"Project, region, officer, category, supplier, method, unit, and delivery fields checked."
+Delivery counts,"{""Cross_Tab"": {""Cancelled|No"": 17, ""Cancelled|Yes"": 48, ""Delivered|No"": 53, ""Delivered|Yes"": 151, ""Partially Delivered|No"": 19, ""Partially Delivered|Yes"": 49, ""Pending|No"": 19, ""Pending|Yes"": 44}, ""Delivery_Status"": {""Cancelled"": 65, ""Delivered"": 204, ""Partially Delivered"": 68, ""Pending"": 63}, ""On_Time_Delivery"": {""No"": 108, ""Yes"": 292}}","{""Cross_Tab"": {""Cancelled|No"": 17, ""Cancelled|Yes"": 48, ""Delivered|No"": 53, ""Delivered|Yes"": 151, ""Partially Delivered|No"": 19, ""Partially Delivered|Yes"": 49, ""Pending|No"": 19, ""Pending|Yes"": 44}, ""Delivery_Status"": {""Cancelled"": 65, ""Delivered"": 204, ""Partially Delivered"": 68, ""Pending"": 63}, ""On_Time_Delivery"": {""No"": 108, ""Yes"": 292}}",PASS,Cleaning did not change delivery status or on-time classifications.
+Approved PO identifier corrections,Two duplicate identifiers,400 unique PO numbers,PASS,Rows 31 and 121 match the instructor-approved replacements.
+Approved PO Value reconstructions,Two source identity failures,Both corrected,PASS,Rows 46 and 224 use Budget Value + Cost Variance.
+Q1 dual-method verification,Manual Decimal aggregation,Pivot/groupby aggregation,PASS,All project and material-category metrics and ranks match.
+Q2 dual-method verification,Manual Decimal aggregation,Pivot/groupby aggregation,PASS,"All supplier metrics, qualification flags, and ranks match."
+Q3 dual-method verification,Manual statistics,Pivot/groupby and SciPy statistics,PASS,All procurement-method metrics and inferential tests match.
+Q4 dual-method verification,Manual Delivered-only aggregation,Pivot/groupby Delivered-only aggregation,PASS,"Portfolio, material-category, and supplier metrics and ranks match."
+Lead-time imputation sensitivity,44.643564,44.647059,PASS,Blank-versus-45-day comparison changes the portfolio average by 0.003495 day and changes no ranking or recommendation.

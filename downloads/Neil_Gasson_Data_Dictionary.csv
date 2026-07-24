@@ -1,0 +1,29 @@
+Scope,Field,Definition,Formula_or_Rule,Analysis_Treatment
+Source field,PO_Number,Unique purchase-order identifier after approved corrections.,Text identifier; no aggregation.,400 unique values in the official cleaned dataset.
+Source field,PO_Date,Purchase-order date.,True spreadsheet date displayed as yyyy-mm-dd.,All 400 dates included.
+Source field,Month,Calendar month of PO_Date.,"=TEXT(PO_Date,""mmmm"")",Validated against PO_Date for every row.
+Source field,Project_Name,Construction project associated with the purchase order.,Categorical field.,Used for Q1 project aggregation.
+Source field,Region,Geographic operating region.,Categorical field.,Retained; not used as a primary Q1–Q5 grouping.
+Source field,Procurement_Officer,Officer responsible for the procurement transaction.,Categorical field.,Retained for traceability.
+Source field,Material_Category,Procurement material/work category.,Categorical field.,Used for Q1 and Q4 aggregation.
+Source field,Item_Description,Description of the item or work purchased.,Text field.,Retained for transaction detail.
+Source field,Supplier_Name,Supplier for the purchase order.,Categorical field.,Used for Q2 and Q4 supplier analysis.
+Source field,Procurement_Method,Method used to procure the order.,Categorical field with five observed values.,Used for Q3; Invitational has no observed records.
+Source field,Quantity,Number of units purchased.,Positive numeric value.,Used to validate PO Value and Budget Value.
+Source field,Unit,Unit of measure.,Categorical field.,Retained for transaction detail.
+Source field,Unit_Rate_CAD,Actual unit price in Canadian dollars.,PO_Value_CAD ÷ Quantity.,Four corrected/derived values documented in Audit_Log.
+Source field,Budgeted_Rate_CAD,Budgeted unit price in Canadian dollars.,Budget_Value_CAD ÷ Quantity.,Authoritative source field.
+Source field,PO_Value_CAD,Actual purchase-order value in Canadian dollars.,Quantity × Unit_Rate_CAD.,Rows 46 and 224 reconstructed as Budget Value + Cost Variance.
+Source field,Budget_Value_CAD,Budgeted purchase-order value in Canadian dollars.,Quantity × Budgeted_Rate_CAD.,Authoritative for all records.
+Source field,Cost_Variance_CAD,Difference between actual PO value and budget.,PO_Value_CAD - Budget_Value_CAD.,Positive = over budget; negative = under budget.
+Source field,Variance_%,Cost variance as a percentage of budget.,Cost_Variance_CAD ÷ Budget_Value_CAD × 100.,Stored as percentage points rounded to one decimal.
+Source field,Lead_Time_Days,Supplier lead time in calendar days.,Observed value; two approved Civil Works imputations = 45.,Q4 uses Delivered orders only.
+Source field,On_Time_Delivery,Whether delivery was recorded on time.,Yes/No categorical field.,Q4 numerator counts Yes among Delivered orders.
+Source field,Delivery_Status,Current delivery state.,"Delivered, Partially Delivered, Pending, or Cancelled.",Q4 includes Delivered only; all other statuses excluded.
+Analysis rule,Q1 Net Cost Overrun (CAD),Net aggregate cost variance for a project or category.,SUM(Cost_Variance_CAD).,Rank descending; positive values are overruns.
+Analysis rule,Q1 Net Cost Overrun (%),Net aggregate variance relative to aggregate budget.,SUM(Cost_Variance_CAD) ÷ SUM(Budget_Value_CAD).,"Weighted aggregate percentage, not average row percentage."
+Analysis rule,Q2 Consistently Above Budget,Supplier-level majority and net-positive rule.,>50% of POs above budget AND total Cost_Variance_CAD > 0.,Qualifiers ranked by average variance descending.
+Analysis rule,Q3 Procurement Method Effect,Association between method and normalized row variance.,One-way ANOVA and Kruskal-Wallis on Variance_%; α = 0.05.,"Observational, not causal."
+Analysis rule,Q4 On-Time Delivery Rate,Share of Delivered orders recorded Yes.,"COUNTIFS(Delivery_Status, Delivered, On_Time_Delivery, Yes) ÷ COUNTIF(Delivery_Status, Delivered).","Pending, Cancelled, and Partially Delivered excluded."
+Analysis rule,Q4 Delivery Rank,Best-to-worst delivery-performance order.,On-time rate descending; average lead time ascending; name ascending.,Applied separately to categories and suppliers.
+Sensitivity rule,Lead-time imputation sensitivity,Comparison of blank lead times with approved 45-day values.,Recalculate Delivered-only lead-time metrics and ranks under both scenarios.,"No category rank, supplier rank, on-time rate, or recommendation changes."
